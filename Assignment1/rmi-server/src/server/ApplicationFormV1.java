@@ -88,6 +88,7 @@ public class ApplicationFormV1 implements ApplicationForm, Serializable{
             } else {
                 sb.append("N/A");
             }
+            sb.append("\n");
         }
 
         return sb.toString();

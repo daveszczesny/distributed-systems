@@ -5,7 +5,6 @@ import java.util.Scanner;
 
 import server.ApplicationForm;
 import server.ApplicationHandler;
-import server.ApplicationHandler;
 
 /*
  * ApplicationClient.java - this Java class should provide the client code.
@@ -22,31 +21,24 @@ public class ApplicationClient {
         try{
             Scanner scanner = new Scanner(System.in);
             ApplicationHandler handler = (ApplicationHandler) Naming.lookup("//localhost/ApplicationForms");
-            ApplicationHandler handler = (ApplicationHandler) Naming.lookup("//localhost/ApplicationForms");
             System.out.println("Enter your username: ");
             String username = scanner.nextLine();
 
             System.out.println("Enter your password: ");
             String password = scanner.nextLine();
-            
-            System.out.println("Getting session id");
-            long sessionId = handler.login(username, password);
-            System.out.println("Session id: " + sessionId);
-            
-            ApplicationForm form;
-            try{
-                form = handler.downloadApplicationForm(sessionId);
-                for (int i = 0; i < form.getTotalNumberOfQuestions(); i++) {
-                    System.out.println(form.getQuestion(i));
-                    String answer = scanner.nextLine();
-                    form.answerQuestion(i, answer);
-                }
 
-                handler.submitApplicationForm(sessionId, form);
-                System.out.println("Form submitted successfully");
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+            long sessionId = handler.login(username, password);
+            System.out.println("Successfully logged in!");
+
+            ApplicationForm form = handler.downloadApplicationForm(sessionId);
+            for (int i = 0; i < form.getTotalNumberOfQuestions(); i++) {
+                System.out.println(form.getQuestion(i));
+                String answer = scanner.nextLine();
+                form.answerQuestion(i, answer);
             }
+
+            handler.submitApplicationForm(sessionId, form);
+            System.out.println("Form submitted successfully");
 
             scanner.close();
 
