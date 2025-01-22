@@ -1,4 +1,4 @@
-package server.exceptions;
+package exceptions;
 
 public class InvalidAnswerException extends Exception {
     public InvalidAnswerException(String message) {

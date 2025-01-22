@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-import server.exceptions.InvalidCredentialsException;
+import exceptions.InvalidCredentialsException;
 
 /*
  * ApplicationHandler.java - this Java interface provides remote methods for user login, 

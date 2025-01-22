@@ -3,6 +3,7 @@ package client;
 import java.rmi.Naming;
 import java.util.Scanner;
 
+import exceptions.InvalidCredentialsException;
 import server.ApplicationForm;
 import server.ApplicationHandler;
 
@@ -17,27 +18,60 @@ import server.ApplicationHandler;
  */
 
 public class ApplicationClient {
+
+    private static void printErrorAndExit(String message) {
+        System.out.println(message);
+        System.exit(1);
+    }
+
     public static void main(String[] args) {
         try{
             Scanner scanner = new Scanner(System.in);
             ApplicationHandler handler = (ApplicationHandler) Naming.lookup("//localhost/ApplicationForms");
+            
+            System.out.println("Welcome to the Application Form System");
+            System.out.println("Please login to continue");
+
             System.out.println("Enter your username: ");
             String username = scanner.nextLine();
 
             System.out.println("Enter your password: ");
             String password = scanner.nextLine();
 
-            long sessionId = handler.login(username, password);
+            System.out.printf("Logging in as %s with password %s \n", username, password);
+
+            long sessionId = -1;
+
+            try {
+                sessionId = handler.login(username, password);
+            } catch (InvalidCredentialsException ex) {
+                printErrorAndExit("Invalid credentials. Please try again.");
+            } catch (Exception e) {
+                printErrorAndExit("An error occurred. Please try again.");
+            }
+
+            if (sessionId < 0) {
+                printErrorAndExit("An error occurred. Please try again.");
+            }
+
             System.out.println("Successfully logged in!");
 
             ApplicationForm form = handler.downloadApplicationForm(sessionId);
+
+            System.out.println("Please fill out the form below:");
+
             for (int i = 0; i < form.getTotalNumberOfQuestions(); i++) {
                 System.out.println(form.getQuestion(i));
                 String answer = scanner.nextLine();
                 form.answerQuestion(i, answer);
             }
 
-            handler.submitApplicationForm(sessionId, form);
+            try{
+                handler.submitApplicationForm(sessionId, form);
+            } catch (Exception e) {
+                System.out.println(e);
+                printErrorAndExit("An error occurred. Please try again.");
+            }
             System.out.println("Form submitted successfully");
 
             scanner.close();
