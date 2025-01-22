@@ -44,10 +44,10 @@ public class ApplicationHandlerImpl implements ApplicationHandler{
     public long login(String username, String password) throws RemoteException, InvalidCredentialsException{
         // Check Username and password Separately for a more clear Exception Message for clarity
         // Extra null and extra string checks for more robustness
-        if (!username.equals(VALID_USERNAME) || username == null || username == "") {
+        if (username == null || !username.equals(VALID_USERNAME)) {
             throw new InvalidCredentialsException("Invalid username");
         }
-        if (!password.equals(VALID_PASSWORD) || password == null || password == "") {
+        if (password == null || !password.equals(VALID_PASSWORD)) {
             throw new InvalidCredentialsException("Invalid password");
         }
 
