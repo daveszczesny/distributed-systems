@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import server.ApplicationForm;
 import server.ApplicationHandler;
+import server.ApplicationHandler;
 
 /*
  * ApplicationClient.java - this Java class should provide the client code.
@@ -20,6 +21,7 @@ public class ApplicationClient {
     public static void main(String[] args) {
         try{
             Scanner scanner = new Scanner(System.in);
+            ApplicationHandler handler = (ApplicationHandler) Naming.lookup("//localhost/ApplicationForms");
             ApplicationHandler handler = (ApplicationHandler) Naming.lookup("//localhost/ApplicationForms");
             System.out.println("Enter your username: ");
             String username = scanner.nextLine();
