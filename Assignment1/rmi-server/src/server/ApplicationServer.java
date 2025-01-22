@@ -14,15 +14,14 @@ import java.rmi.server.UnicastRemoteObject;
  */
 
 public class ApplicationServer {
-    
+
+    public ApplicationHandler appHandler;
 
     ApplicationServer() throws RemoteException{
         super();
-    }
 
-    public static void main(String[] args){
         try {
-            ApplicationHandler appHandler = new ApplicationHandlerImpl();
+            appHandler = new ApplicationHandlerImpl();
 
             ApplicationHandler stub = (ApplicationHandler) UnicastRemoteObject.exportObject(appHandler, 0);
 
@@ -32,6 +31,14 @@ public class ApplicationServer {
         } catch (Exception ex) {
             System.err.println("Server exception: " + ex.toString());
             ex.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args){
+        try {
+            new ApplicationServer();
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 }

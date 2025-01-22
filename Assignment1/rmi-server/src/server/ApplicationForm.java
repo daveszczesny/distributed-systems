@@ -22,5 +22,5 @@ public interface ApplicationForm extends Remote {
     int getTotalNumberOfQuestions() throws RemoteException;
     String getQuestion(int questionIndex) throws RemoteException, InvalidQuestionIndexException;
     void answerQuestion(int questionIndex, String answer) throws RemoteException, InvalidQuestionIndexException, InvalidAnswerException, InvalidNameException;
-    String getName();
+    String getName() throws RemoteException;
 }

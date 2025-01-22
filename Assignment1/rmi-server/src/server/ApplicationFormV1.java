@@ -70,7 +70,7 @@ public class ApplicationFormV1 implements ApplicationForm{
     }
 
     @Override
-    public String getName() {
+    public String getName() throws RemoteException{
         return answers.get(0);
     }
 

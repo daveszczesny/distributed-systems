@@ -1,9 +1,10 @@
 package server;
 
 import java.io.FileNotFoundException;
-import java.nio.file.FileAlreadyExistsException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+
+import server.exceptions.InvalidCredentialsException;
 
 /*
  * ApplicationHandler.java - this Java interface provides remote methods for user login, 
@@ -16,7 +17,7 @@ import java.rmi.RemoteException;
  */
 
 public interface ApplicationHandler extends Remote {
-    long login(String username, String password) throws InvalidCredentialsException;
-    ApplicationForm downloadApplicationForm(long sessionId);
-    void submitApplicationForm(long sessionId, ApplicationForm applicationForm) throws FileNotFoundException;
+    long login(String username, String password) throws RemoteException, InvalidCredentialsException;
+    ApplicationForm downloadApplicationForm(long sessionId) throws RemoteException;
+    void submitApplicationForm(long sessionId, ApplicationForm applicationForm) throws RemoteException, FileNotFoundException;
 }

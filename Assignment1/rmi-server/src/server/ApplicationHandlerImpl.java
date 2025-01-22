@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Random;
 
+import server.exceptions.InvalidCredentialsException;
+
 /*
  * ApplicationHandlerImpl.java - this Java class should 
  * provide the implementation of the ApplicationHandler 
@@ -39,7 +41,7 @@ public class ApplicationHandlerImpl implements ApplicationHandler{
     }
 
     @Override
-    public long login(String username, String password) throws InvalidCredentialsException{
+    public long login(String username, String password) throws RemoteException, InvalidCredentialsException{
         if (
             username.equals(VALID_USERNAME) &&
             password.equals(VALID_PASSWORD)
@@ -52,12 +54,12 @@ public class ApplicationHandlerImpl implements ApplicationHandler{
     }
 
     @Override
-    public ApplicationForm downloadApplicationForm(long sessionId) {
+    public ApplicationForm downloadApplicationForm(long sessionId) throws RemoteException{
         return new ApplicationFormV1();
     }
 
     @Override
-    public void submitApplicationForm(long sessionId, ApplicationForm applicationForm) throws FileNotFoundException {
+    public void submitApplicationForm(long sessionId, ApplicationForm applicationForm) throws RemoteException, FileNotFoundException {
         String fileName = applicationForm.getName().replaceAll(" ", "_") + "_application_form.txt";
         PrintWriter writer = new PrintWriter(new File(fileName));
         writer.println(applicationForm.toString());
