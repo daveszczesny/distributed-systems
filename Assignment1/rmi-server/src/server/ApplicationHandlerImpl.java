@@ -42,15 +42,17 @@ public class ApplicationHandlerImpl implements ApplicationHandler{
 
     @Override
     public long login(String username, String password) throws RemoteException, InvalidCredentialsException{
-        if (
-            username.equals(VALID_USERNAME) &&
-            password.equals(VALID_PASSWORD)
-        ) {
-            System.out.println("User logged in: " + username);
-            return random.nextLong();
-        } else {
-            throw new InvalidCredentialsException("Invalid username or password.");
+        // Check Username and password Separately for a more clear Exception Message for clarity
+        // Extra null and extra string checks for more robustness
+        if (username == null || !username.equals(VALID_USERNAME)) {
+            throw new InvalidCredentialsException("Invalid username");
         }
+        if (password == null || !password.equals(VALID_PASSWORD)) {
+            throw new InvalidCredentialsException("Invalid password");
+        }
+
+        System.out.println("User logged in: " + username);
+        return random.nextLong();
     }
 
     @Override
