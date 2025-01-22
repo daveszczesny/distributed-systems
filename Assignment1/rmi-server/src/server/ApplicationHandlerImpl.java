@@ -34,6 +34,8 @@ import exceptions.InvalidCredentialsException;
 public class ApplicationHandlerImpl implements ApplicationHandler{
 
     private static final Map<String, String> VALID_CREDENTIALS = new HashMap<>();
+
+    // Hardcoded valid credentials
     static {
         VALID_CREDENTIALS.put("admin", "password");
         VALID_CREDENTIALS.put("dave", "21300293");
@@ -57,13 +59,14 @@ public class ApplicationHandlerImpl implements ApplicationHandler{
             throw new InvalidCredentialsException("Invalid password");
         }
 
-        System.out.printf("User %s logged in succesfully\n", username);
-        return Math.abs(random.nextLong());
+        long sessionId = Math.abs(random.nextLong());
+        System.out.printf("User %s logged in succesfully. Session Id: %d\n", username, sessionId);
+        return sessionId;
     }
 
     @Override
     public ApplicationForm downloadApplicationForm(long sessionId) throws RemoteException{
-        System.out.println("Downloading application form");
+        System.out.printf("Downloading application form to %d\n", sessionId);
         return new ApplicationFormV1();
     }
 

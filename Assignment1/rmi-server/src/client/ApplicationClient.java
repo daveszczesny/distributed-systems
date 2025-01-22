@@ -64,6 +64,7 @@ public class ApplicationClient {
                 System.out.println(form.getQuestion(i));
                 String answer = scanner.nextLine();
                 form.answerQuestion(i, answer);
+                System.out.printf("\n");
             }
 
             try{

@@ -1,0 +1,3 @@
+cd bin
+echo Starting RMI Registry...
+rmiregistry 4040
