@@ -7,8 +7,8 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import server.exceptions.InvalidAnswerException;
-import server.exceptions.InvalidQuestionIndexException;
+import exceptions.InvalidAnswerException;
+import exceptions.InvalidQuestionIndexException;
 
 /*
  * ApplicationFormV1.java - this Java class should provide an

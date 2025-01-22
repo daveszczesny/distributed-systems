@@ -5,8 +5,8 @@ import java.rmi.RemoteException;
 
 import javax.naming.InvalidNameException;
 
-import server.exceptions.InvalidAnswerException;
-import server.exceptions.InvalidQuestionIndexException;
+import exceptions.InvalidAnswerException;
+import exceptions.InvalidQuestionIndexException;
 
 /*
  * ApplicationForm.java - this Java interface provides methods for 
