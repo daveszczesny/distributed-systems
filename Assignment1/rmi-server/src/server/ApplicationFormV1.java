@@ -1,5 +1,6 @@
 package server;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ import server.exceptions.InvalidQuestionIndexException;
  * qualifications or results.
  */
 
-public class ApplicationFormV1 implements ApplicationForm{
+public class ApplicationFormV1 implements ApplicationForm, Serializable{
 
     private Map<Integer, String> questions;
     private Map<Integer, String> answers;
@@ -29,7 +30,7 @@ public class ApplicationFormV1 implements ApplicationForm{
     public ApplicationFormV1() {
         questions = new HashMap<>();
         answers = new HashMap<>();
-        questions.put(0, "Name:");
+        questions.put(0, "Full Name:");
         questions.put(1, "Address:");
         questions.put(2, "Email:");
         questions.put(3, "Contact Number:");
@@ -48,7 +49,7 @@ public class ApplicationFormV1 implements ApplicationForm{
 
     @Override
     public String getQuestion(int questionIndex) throws RemoteException, InvalidQuestionIndexException {
-        if (questionIndex < 1 || questionIndex > questions.size()){
+        if (questionIndex < 0 || questionIndex >= questions.size()){
             throw new InvalidQuestionIndexException("Invalid question index");
         }
         return questions.get(questionIndex);
@@ -56,12 +57,11 @@ public class ApplicationFormV1 implements ApplicationForm{
 
     @Override
     public void answerQuestion(int questionIndex, String answer) throws RemoteException, InvalidQuestionIndexException, InvalidAnswerException, InvalidNameException {
-        if (questionIndex < 1 || questionIndex > questions.size()) {
-            throw new InvalidQuestionIndexException("Invalid question index");
-        } else if (answer == null || answer.isEmpty()) {
+        if (answer == null || answer.isEmpty()) {
             throw new InvalidAnswerException("Invalid answer provided. Answer must not be null");
         }
 
+        // This is a check to ensure that the full name is provided
         if (questionIndex == 0 && !answer.contains(" ")) {
             throw new InvalidNameException("Invalid name provided. First and last name must be provided");
         }

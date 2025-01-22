@@ -1,0 +1,3 @@
+echo Building Application...
+javac -d bin -sourcepath src src/server/*.java src/server/exceptions/*.java src/client/*.java
+echo Built Application
