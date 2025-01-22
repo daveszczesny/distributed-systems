@@ -4,7 +4,7 @@ import java.rmi.Naming;
 import java.util.Scanner;
 
 import server.ApplicationForm;
-import server.ApplicationServer;
+import server.ApplicationHandler;
 
 /*
  * ApplicationClient.java - this Java class should provide the client code.
@@ -20,25 +20,33 @@ public class ApplicationClient {
     public static void main(String[] args) {
         try{
             Scanner scanner = new Scanner(System.in);
-            ApplicationServer server = (ApplicationServer) Naming.lookup("//localhost/ApplicationForms");
+            ApplicationHandler handler = (ApplicationHandler) Naming.lookup("//localhost/ApplicationForms");
             System.out.println("Enter your username: ");
             String username = scanner.nextLine();
 
             System.out.println("Enter your password: ");
             String password = scanner.nextLine();
-
-            long sessionId = server.appHandler.login(username, password);
-
-            ApplicationForm form = server.appHandler.downloadApplicationForm(sessionId);
-
-            for (int i = 0; i < form.getTotalNumberOfQuestions(); i++) {
-                System.out.println(form.getQuestion(i));
-                String answer = scanner.nextLine();
-                form.answerQuestion(i, answer);
+            
+            System.out.println("Getting session id");
+            long sessionId = handler.login(username, password);
+            System.out.println("Session id: " + sessionId);
+            
+            ApplicationForm form;
+            try{
+                form = handler.downloadApplicationForm(sessionId);
+                for (int i = 0; i < form.getTotalNumberOfQuestions(); i++) {
+                    System.out.println(form.getQuestion(i));
+                    String answer = scanner.nextLine();
+                    form.answerQuestion(i, answer);
+                }
+    
+                handler.submitApplicationForm(sessionId, form);
+                System.out.println("Form submitted successfully");
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
 
-            server.appHandler.submitApplicationForm(sessionId, form);
-            System.out.println("Form submitted successfully");
+            
 
             scanner.close();
 
