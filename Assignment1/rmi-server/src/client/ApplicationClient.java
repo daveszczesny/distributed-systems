@@ -4,7 +4,7 @@ import java.rmi.Naming;
 import java.util.Scanner;
 
 import server.ApplicationForm;
-import server.ApplicationServer;
+import server.ApplicationHandler;
 
 /*
  * ApplicationClient.java - this Java class should provide the client code.
@@ -20,24 +20,24 @@ public class ApplicationClient {
     public static void main(String[] args) {
         try{
             Scanner scanner = new Scanner(System.in);
-            ApplicationServer server = (ApplicationServer) Naming.lookup("//localhost/ApplicationForms");
+            ApplicationHandler handler = (ApplicationHandler) Naming.lookup("//localhost/ApplicationForms");
             System.out.println("Enter your username: ");
             String username = scanner.nextLine();
 
             System.out.println("Enter your password: ");
             String password = scanner.nextLine();
 
-            long sessionId = server.appHandler.login(username, password);
+            long sessionId = handler.login(username, password);
+            System.out.println("Successfully logged in!");
 
-            ApplicationForm form = server.appHandler.downloadApplicationForm(sessionId);
-
+            ApplicationForm form = handler.downloadApplicationForm(sessionId);
             for (int i = 0; i < form.getTotalNumberOfQuestions(); i++) {
                 System.out.println(form.getQuestion(i));
                 String answer = scanner.nextLine();
                 form.answerQuestion(i, answer);
             }
 
-            server.appHandler.submitApplicationForm(sessionId, form);
+            handler.submitApplicationForm(sessionId, form);
             System.out.println("Form submitted successfully");
 
             scanner.close();

@@ -52,7 +52,7 @@ public class ApplicationHandlerImpl implements ApplicationHandler{
         }
 
         System.out.println("User logged in: " + username);
-        return random.nextLong();
+        return Math.abs(random.nextLong());
     }
 
     @Override
