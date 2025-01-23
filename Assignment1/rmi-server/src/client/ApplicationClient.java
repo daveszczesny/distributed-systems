@@ -58,13 +58,29 @@ public class ApplicationClient {
 
             ApplicationForm form = handler.downloadApplicationForm(sessionId);
 
-            System.out.println("Please fill out the form below:");
+            System.out.println("Please fill out the form below:\n");
+
 
             for (int i = 0; i < form.getTotalNumberOfQuestions(); i++) {
-                System.out.println(form.getQuestion(i));
-                String answer = scanner.nextLine();
-                form.answerQuestion(i, answer);
-                System.out.printf("\n");
+                boolean validAnswer = false;
+                while(!validAnswer) {
+                    System.out.println(form.getQuestion(i));
+                    String answer = scanner.nextLine();
+
+
+                    if (answer.equals("exit")) {
+                        System.out.println("Exiting application form");
+                        System.exit(0);
+                    }
+                    try {
+                        form.answerQuestion(i, answer);
+                        validAnswer = true;
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                        System.out.println("Please try again. or type 'exit' to exit the application form. \n");
+                    }
+                }
+                System.out.println("\n");
             }
 
             try{
