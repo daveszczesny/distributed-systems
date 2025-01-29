@@ -4,11 +4,15 @@ import java.io.PrintWriter;
 import java.rmi.RemoteException;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import exceptions.InvalidCredentialsException;
+import exceptions.InvalidSessionException;
+import server.models.Session;
 
 /*
  * ApplicationHandlerImpl.java - this Java class should 
@@ -35,17 +39,14 @@ public class ApplicationHandlerImpl implements ApplicationHandler{
 
     private static final Map<String, String> VALID_CREDENTIALS = new HashMap<>();
 
+    private List<Session> sessions = new ArrayList<>();
+    private long sessionExpiryTime = 60_000;
+
     // Hardcoded valid credentials
     static {
         VALID_CREDENTIALS.put("admin", "password");
         VALID_CREDENTIALS.put("dave", "21300293");
         VALID_CREDENTIALS.put("brian", "21333461");
-    }
-
-    private Random random;
-
-    ApplicationHandlerImpl() throws RemoteException {
-        random = new Random();
     }
 
     @Override
@@ -59,24 +60,64 @@ public class ApplicationHandlerImpl implements ApplicationHandler{
             throw new InvalidCredentialsException("Invalid password");
         }
 
-        long sessionId = Math.abs(random.nextLong());
-        System.out.printf("User %s logged in succesfully. Session Id: %d\n", username, sessionId);
-        return sessionId;
+        try{
+        Session session = new Session();
+        sessions.add(session);
+        System.out.printf("User %s logged in succesfully. Session Id: %d\n", username, session.getId());
+        return session.getId();
+        }catch(Exception e) {
+            System.out.println("Error creating session");
+        }
+
+        throw new InvalidCredentialsException("Error creating session");
+
+        
     }
 
     @Override
-    public ApplicationForm downloadApplicationForm(long sessionId) throws RemoteException{
+    public ApplicationForm downloadApplicationForm(long sessionId) throws RemoteException, InvalidSessionException{
+
+        // Check if session is valid
+        if (!isSessionValid(sessionId)) throw new InvalidSessionException("Session is invalid or expired");
+
         System.out.printf("Downloading application form to %d\n", sessionId);
         return new ApplicationFormV1();
     }
 
     @Override
-    public void submitApplicationForm(long sessionId, ApplicationForm applicationForm) throws RemoteException, FileNotFoundException {
+    public void submitApplicationForm(long sessionId, ApplicationForm applicationForm) throws RemoteException, FileNotFoundException, InvalidSessionException {
+        
+        // Check if session is valid
+        if(!isSessionValid(sessionId)) throw new InvalidSessionException("Session is invalid or expired");
+
         System.out.printf("Submitting application form from %d \n", sessionId);
-        String fileName = applicationForm.getName().replaceAll(" ", "_") + "_application_form.txt";
-        PrintWriter writer = new PrintWriter(new File(fileName));
+
+        StringBuilder fileNameBuilder = new StringBuilder();
+        fileNameBuilder.append(
+            applicationForm.getName().replaceAll(" ", "_")
+        );
+        
+        fileNameBuilder.append("_");
+        fileNameBuilder.append(String.valueOf(sessionId).substring(0, 5));
+        fileNameBuilder.append("_application_form.txt");
+
+        PrintWriter writer = new PrintWriter(new File(fileNameBuilder.toString()));
         writer.println(applicationForm.toString());
         writer.close();
-        System.out.println("Application form saved to file: " + fileName);
+        System.out.println("Application form saved to file: " + fileNameBuilder.toString());
+    }
+
+    @Override
+    public boolean isSessionValid(long sessionId) throws RemoteException {
+        Session currentSession = sessions.stream().filter(s -> s.getId() == sessionId).findFirst().orElse(null);
+        if (currentSession == null) {
+            System.out.printf("Session %d not found\n", sessionId);
+            return false;
+        } else if (currentSession.getSessionStarted() + sessionExpiryTime < System.currentTimeMillis()) {
+            System.out.printf("Session %d has expired\n", sessionId);
+            this.sessions.remove(currentSession);
+            return false;
+        }
+        return true;
     }
 }

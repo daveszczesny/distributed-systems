@@ -5,6 +5,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 import exceptions.InvalidCredentialsException;
+import exceptions.InvalidSessionException;
 
 /*
  * ApplicationHandler.java - this Java interface provides remote methods for user login, 
@@ -18,6 +19,7 @@ import exceptions.InvalidCredentialsException;
 
 public interface ApplicationHandler extends Remote {
     long login(String username, String password) throws RemoteException, InvalidCredentialsException;
-    ApplicationForm downloadApplicationForm(long sessionId) throws RemoteException;
-    void submitApplicationForm(long sessionId, ApplicationForm applicationForm) throws RemoteException, FileNotFoundException;
+    ApplicationForm downloadApplicationForm(long sessionId) throws RemoteException, InvalidSessionException;
+    void submitApplicationForm(long sessionId, ApplicationForm applicationForm) throws RemoteException, FileNotFoundException, InvalidSessionException;
+    boolean isSessionValid(long sessionId) throws RemoteException, InvalidSessionException;
 }
